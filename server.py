@@ -1222,3 +1222,6 @@ threading.Thread(target=run_scanner, daemon=True).start()
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=PORT, debug=False)
+
+# Canary — bump to confirm new deploy picked up
+APP_BUILD = "v4-real-golfnow-ids"
