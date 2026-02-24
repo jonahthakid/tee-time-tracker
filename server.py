@@ -107,20 +107,34 @@ def safe_read_json(filepath, default=None):
 # =============================================================================
 # COURSE DATABASE
 # =============================================================================
+SEED_VERSION = 4  # bump this whenever get_seed_courses() changes
+
 def load_courses():
-    """Load course database from file"""
+    """Load course database, auto-migrating if seed version changed."""
     courses_path = os.path.join(BASE_DIR, COURSES_FILE)
-    courses = safe_read_json(courses_path, [])
-    if not courses:
-        courses = get_seed_courses()
-        atomic_write_json(courses_path, courses)
-    return courses
+    stored = safe_read_json(courses_path, {})
+
+    # Legacy format was a plain list; new format is {"version": N, "courses": [...]}
+    if isinstance(stored, list):
+        stored_version = 0
+        stored_courses = stored
+    else:
+        stored_version = stored.get("version", 0)
+        stored_courses = stored.get("courses", [])
+
+    if stored_version < SEED_VERSION or not stored_courses:
+        print(f"⚙️  Course DB v{stored_version} → v{SEED_VERSION}: reseeding...")
+        fresh = get_seed_courses()
+        atomic_write_json(courses_path, {"version": SEED_VERSION, "courses": fresh})
+        return fresh
+
+    return stored_courses
 
 
 def save_courses(courses):
     """Save course database"""
     courses_path = os.path.join(BASE_DIR, COURSES_FILE)
-    atomic_write_json(courses_path, courses)
+    atomic_write_json(courses_path, {"version": SEED_VERSION, "courses": courses})
 
 
 def get_seed_courses():
