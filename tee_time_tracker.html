@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAIRWAY — Elite Tee Time Tracker</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,500;9..40,700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            500: '#C5A059',
+                            600: '#A68648',
+                        },
+                        onyx: {
+                            900: '#0A0C10',
+                            800: '#14171C',
+                            700: '#1C2127',
+                        },
+                        turf: {
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                        }
+                    },
+                    fontFamily: {
+                        display: ['"Instrument Serif"', 'serif'],
+                        body: ['"DM Sans"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { font-family: 'DM Sans', sans-serif; background: #0A0C10; color: #E5E7EB; }
+        .font-display { font-family: 'Instrument Serif', serif; }
+
+        /* Glassmorphism */
+        .glass-card {
+            background: rgba(28, 33, 39, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            border-color: rgba(197, 160, 89, 0.4);
+            transform: translateY(-4px);
+            background: rgba(28, 33, 39, 0.8);
+        }
+
+        /* Animated Gradient Text */
+        .gradient-text {
+            background: linear-gradient(to right, #fff, #C5A059);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Modern Scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #0A0C10; }
+        ::-webkit-scrollbar-thumb { background: #1C2127; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #C5A059; }
+
+        /* Smooth Reveal */
+        @keyframes reveal {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .reveal { animation: reveal 0.6s ease-out forwards; }
+
+        .time-pill {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.2s;
+        }
+        .time-pill:hover {
+            background: #C5A059;
+            color: #000;
+            border-color: #C5A059;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <nav class="sticky top-0 z-50 border-b border-white/5 bg-onyx-900/80 backdrop-blur-xl">
+        <div class="container mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-turf-600 to-turf-700 flex items-center justify-center shadow-lg shadow-turf-900/20">
+                    <i class="fas fa-flag text-white"></i>
+                </div>
+                <div>
+                    <h1 class="font-display text-2xl tracking-tight leading-none">FAIRWAY</h1>
+                    <p class="text-[9px] text-gold-500 tracking-[0.2em] uppercase font-bold">Live Price Intelligence</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-6">
+                <div id="last-updated" class="text-[11px] text-gray-500 font-medium uppercase tracking-widest hidden md:block"></div>
+                <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
+                    <div id="status-dot" class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
+                    <span class="text-[10px] font-bold uppercase tracking-tighter text-gray-400">Live</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="relative overflow-hidden py-16 lg:py-24">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-turf-900/20 via-transparent to-transparent -z-10"></div>
+
+        <div class="container mx-auto px-6">
+            <div class="max-w-3xl">
+                <h2 class="font-display text-5xl md:text-7xl mb-6 reveal italic">
+                    The <span class="gradient-text not-italic">Gold Standard</span> of <br>Tee Time Tracking.
+                </h2>
+                <p class="text-gray-400 text-lg mb-10 max-w-xl reveal" style="animation-delay: 0.1s">
+                    Real-time price auditing across elite booking engines. Don't just book—book smarter.
+                </p>
+
+                <div class="flex flex-wrap gap-4 reveal" style="animation-delay: 0.2s">
+                    <div class="relative group">
+                        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 transition-colors group-focus-within:text-gold-500"></i>
+                        <input type="text" id="search-input" placeholder="Search courses or cities..."
+                            class="pl-11 pr-6 py-4 bg-white/5 border border-white/10 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-gold-500/50 focus:bg-white/10 w-72 transition-all">
+                    </div>
+                    <select id="price-filter" class="px-6 py-4 bg-white/5 border border-white/10 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-gold-500/50 appearance-none cursor-pointer hover:bg-white/10 transition-all min-w-[140px]">
+                        <option value="">Max Price</option>
+                        <option value="50">Under $50</option>
+                        <option value="100">Under $100</option>
+                        <option value="200">Under $200</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container mx-auto px-6 mb-12">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 reveal" style="animation-delay: 0.3s">
+            <div class="glass-card rounded-2xl p-6">
+                <p class="text-xs text-gray-500 uppercase tracking-widest mb-1">Total Courses</p>
+                <p class="text-3xl font-display text-white" id="stat-courses">0</p>
+            </div>
+            <div class="glass-card rounded-2xl p-6 border-l-2 border-l-gold-500">
+                <p class="text-xs text-gray-500 uppercase tracking-widest mb-1">Available Times</p>
+                <p class="text-3xl font-display text-white" id="stat-times">0</p>
+            </div>
+            <div class="glass-card rounded-2xl p-6">
+                <p class="text-xs text-gray-500 uppercase tracking-widest mb-1">Market Low</p>
+                <p class="text-3xl font-display text-gold-500" id="stat-low">—</p>
+            </div>
+            <div class="glass-card rounded-2xl p-6">
+                <p class="text-xs text-gray-500 uppercase tracking-widest mb-1">Active Alerts</p>
+                <p class="text-3xl font-display text-turf-500" id="stat-alerts">0</p>
+            </div>
+        </div>
+    </div>
+
+    <main class="container mx-auto px-6 pb-24">
+        <div id="loading-state" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="h-64 rounded-3xl bg-white/5 animate-pulse"></div>
+            <div class="h-64 rounded-3xl bg-white/5 animate-pulse"></div>
+        </div>
+
+        <div id="courses-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6 hidden"></div>
+
+        <div id="empty-state" class="text-center py-32 hidden">
+            <div class="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-golf-ball text-3xl text-gray-700"></i>
+            </div>
+            <p class="text-gray-500 font-medium">No courses match your criteria.</p>
+            <p class="text-gray-600 text-sm mt-2">The first scan may still be in progress — check back in 30 seconds.</p>
+        </div>
+    </main>
+
+    <footer class="border-t border-white/5 bg-onyx-900 py-12">
+        <div class="container mx-auto px-6 flex flex-col items-center">
+            <div class="font-display text-3xl mb-4 italic text-white">Fairway</div>
+            <div class="flex gap-8 text-[11px] uppercase tracking-[0.2em] text-gray-600 mb-8 font-bold">
+                <a href="#" class="hover:text-gold-500 transition-colors">Privacy</a>
+                <a href="#" class="hover:text-gold-500 transition-colors">Terms</a>
+                <a href="/api/status" class="hover:text-gold-500 transition-colors">API</a>
+            </div>
+            <p class="text-[10px] text-gray-700">© 2026 PRO SHOP HOLDINGS. ALL RIGHTS RESERVED.</p>
+        </div>
+    </footer>
+
+    <script>
+    let appData = null;
+    let allCourses = [];
+
+    async function init() {
+        await fetchData();
+        setInterval(fetchData, 60000);
+        document.getElementById('search-input').addEventListener('input', renderCourses);
+        document.getElementById('price-filter').addEventListener('change', renderCourses);
+    }
+
+    async function fetchData() {
+        try {
+            const resp = await fetch('/api/tee-times');
+            if (!resp.ok) throw new Error('API error ' + resp.status);
+            appData = await resp.json();
+
+            const dot = document.getElementById('status-dot');
+            dot.className = 'w-2 h-2 rounded-full bg-turf-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]';
+
+            if (appData.lastUpdated) {
+                const d = new Date(appData.lastUpdated);
+                document.getElementById('last-updated').textContent = `Sync: ${timeAgo(d)}`;
+                document.getElementById('last-updated').classList.remove('hidden');
+            }
+
+            allCourses = appData.courseSummaries || [];
+            renderStats();
+            renderCourses();
+            document.getElementById('loading-state').classList.add('hidden');
+        } catch (err) {
+            console.error('Fetch error:', err);
+            // Show empty state with helpful message if scan hasn't run yet
+            document.getElementById('loading-state').classList.add('hidden');
+            document.getElementById('courses-grid').classList.add('hidden');
+            document.getElementById('empty-state').classList.remove('hidden');
+        }
+    }
+
+    function renderStats() {
+        document.getElementById('stat-courses').textContent = appData.totalCourses || 0;
+        document.getElementById('stat-times').textContent = appData.totalTimes || 0;
+        const prices = (appData.teeTimes || []).map(t => t.total_per_player).filter(p => p > 0);
+        document.getElementById('stat-low').textContent = prices.length ? `$${Math.min(...prices)}` : '—';
+        document.getElementById('stat-alerts').textContent = (appData.priceAlerts || []).length || '0';
+    }
+
+    function renderCourses() {
+        const grid = document.getElementById('courses-grid');
+        const empty = document.getElementById('empty-state');
+        const search = document.getElementById('search-input').value.toLowerCase();
+        const maxPrice = parseFloat(document.getElementById('price-filter').value) || Infinity;
+
+        let filtered = allCourses.filter(c => {
+            const name = (c.course_name || '').toLowerCase();
+            const city = (c.city || '').toLowerCase();
+            if (search && !name.includes(search) && !city.includes(search)) return false;
+            if (maxPrice < Infinity && (c.min_price <= 0 || c.min_price > maxPrice)) return false;
+            return true;
+        });
+
+        if (!filtered.length) {
+            grid.classList.add('hidden');
+            empty.classList.remove('hidden');
+            return;
+        }
+
+        empty.classList.add('hidden');
+        grid.classList.remove('hidden');
+
+        grid.innerHTML = filtered.map((course, i) => {
+            // Use course_name field (matches API output from save_scan_results)
+            const name = course.course_name || course.name || 'Unknown Course';
+            const city = course.city || '';
+            const state = course.state || '';
+            const minPrice = course.min_price > 0 ? `$${course.min_price}` : '—';
+
+            const times = (appData.teeTimes || [])
+                .filter(t => t.course_name === name)
+                .slice(0, 8);
+
+            return `
+            <div class="glass-card rounded-3xl p-8 reveal" style="animation-delay: ${i * 0.05}s">
+                <div class="flex justify-between items-start mb-6">
+                    <div class="flex-1 min-w-0 pr-4">
+                        <h3 class="font-display text-2xl text-white mb-1 truncate">${escapeHtml(name)}</h3>
+                        <p class="text-xs text-gray-500 uppercase tracking-widest font-bold">
+                            <i class="fas fa-location-dot mr-1"></i>${escapeHtml(city)}${state ? ', ' + escapeHtml(state) : ''}
+                        </p>
+                    </div>
+                    <div class="text-right flex-shrink-0">
+                        <p class="text-3xl font-display text-gold-500 leading-none">${minPrice}</p>
+                        <p class="text-[9px] text-gray-500 uppercase tracking-tighter mt-1">Starting at</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4 mb-8 py-3 border-y border-white/5">
+                    <div class="text-center">
+                        <p class="text-[10px] text-gray-500 uppercase mb-0.5">Par</p>
+                        <p class="text-sm font-bold text-white">${course.par || '72'}</p>
+                    </div>
+                    <div class="w-px h-6 bg-white/10"></div>
+                    <div class="text-center">
+                        <p class="text-[10px] text-gray-500 uppercase mb-0.5">Holes</p>
+                        <p class="text-sm font-bold text-white">${course.holes || '18'}</p>
+                    </div>
+                    <div class="ml-auto flex items-center gap-1">
+                        ${renderStars(course.rating || 4.0)}
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <p class="text-[10px] text-gold-500/80 uppercase tracking-[0.2em] font-bold">Available Windows</p>
+                    ${times.length ? `
+                    <div class="flex flex-wrap gap-2">
+                        ${times.map(t => `
+                            <a href="${escapeHtml(t.booking_url || '#')}" target="_blank" rel="noopener"
+                               class="time-pill px-4 py-2 rounded-xl text-xs font-bold transition-all">
+                                ${escapeHtml(t.time)}<span class="opacity-50 ml-1">${t.total_per_player > 0 ? ' $' + t.total_per_player : ''}</span>
+                            </a>
+                        `).join('')}
+                    </div>` : `
+                    <p class="text-xs text-gray-600 italic">No live times yet — checking soon.</p>`}
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function renderStars(rating) {
+        let html = '';
+        for (let i = 0; i < 5; i++) {
+            html += `<i class="fas fa-star ${i < Math.floor(rating) ? 'text-gold-500' : 'text-white/10'} text-[8px]"></i>`;
+        }
+        return html;
+    }
+
+    function timeAgo(d) {
+        const diff = (Date.now() - d.getTime()) / 1000;
+        if (diff < 60) return 'Just Now';
+        if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+        return `${Math.floor(diff / 3600)}h ago`;
+    }
+
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str || '';
+        return div.innerHTML;
+    }
+
+    init();
+    </script>
+</body>
+</html>
