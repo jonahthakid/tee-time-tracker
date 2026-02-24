@@ -1133,6 +1133,18 @@ def get_price_alerts():
     return jsonify({"alerts": data.get("priceAlerts", [])})
 
 
+@app.route('/admin/reset-courses', methods=['POST'])
+def reset_courses():
+    """Delete courses.json so it reseeds from get_seed_courses() on next load (admin only)"""
+    if not check_admin_auth():
+        return jsonify({"error": "Unauthorized"}), 401
+    courses_path = os.path.join(BASE_DIR, COURSES_FILE)
+    if os.path.exists(courses_path):
+        os.remove(courses_path)
+    fresh = load_courses()
+    return jsonify({"status": "reset", "courses": len(fresh)})
+
+
 @app.route('/api/scan', methods=['POST'])
 def trigger_scan():
     """Trigger a manual scan (admin only)"""
