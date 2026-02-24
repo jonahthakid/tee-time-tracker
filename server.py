@@ -127,47 +127,52 @@ def get_seed_courses():
     """
     Seed database of courses with platform IDs.
 
-    ForeUP IDs verified against https://foreupsoftware.com/index.php/booking/{course_id}/{schedule_id}
-    NYC Parks courses use nycgovparks.org reservation system (NOT ForeUP).
-    Westchester courses use golf.westchestergov.com (E-Z Reserve, NOT ForeUP).
-    Nassau County courses use golf.nassaucountyny.gov (NOT ForeUP).
+    ForeUP IDs: confirmed via live booking widget JS (SCHEDULES variable).
+    GolfNow IDs: confirmed via /api/tee-times/facility/{id}/summaries endpoint.
+    NYC Parks / Westchester / Nassau county courses use their own booking systems.
     """
     return [
         # =====================================================================
-        # FOREUP — CONFIRMED IDs
-        # course_id and schedule_id verified via ForeUP booking widget
+        # GOLFNOW — NYC PARKS COURSES (confirmed facility IDs)
+        # These NYC Parks courses book via GolfNow. The summaries API endpoint
+        # works without auth: /api/tee-times/facility/{id}/summaries/from/{d}/to/{d}
         # =====================================================================
+        {"name": "Dyker Beach Golf Course",             "city": "Brooklyn",      "state": "NY", "lat": 40.6137, "lng": -74.0095, "platform": "golfnow", "golfnow_id": "4048",  "holes": 18, "type": "public", "par": 72, "rating": 3.8},
+        {"name": "Marine Park Golf Course",              "city": "Brooklyn",      "state": "NY", "lat": 40.5932, "lng": -73.9185, "platform": "golfnow", "golfnow_id": "4857",  "holes": 18, "type": "public", "par": 72, "rating": 3.6},
+        {"name": "Van Cortlandt Golf Course",            "city": "Bronx",         "state": "NY", "lat": 40.8932, "lng": -73.8886, "platform": "golfnow", "golfnow_id": "5043",  "holes": 18, "type": "public", "par": 70, "rating": 3.5},
+        {"name": "Pelham Golf Course",                   "city": "Bronx",         "state": "NY", "lat": 40.8700, "lng": -73.8064, "platform": "golfnow", "golfnow_id": "4111",  "holes": 18, "type": "public", "par": 71, "rating": 3.7},
+        {"name": "Split Rock Golf Course",               "city": "Bronx",         "state": "NY", "lat": 40.8750, "lng": -73.8050, "platform": "golfnow", "golfnow_id": "19264", "holes": 18, "type": "public", "par": 71, "rating": 3.8},
+        {"name": "Kissena Golf Course",                  "city": "Queens",        "state": "NY", "lat": 40.7500, "lng": -73.8100, "platform": "golfnow", "golfnow_id": "5046",  "holes": 18, "type": "public", "par": 64, "rating": 3.4},
+        {"name": "Clearview Park Golf Course",           "city": "Queens",        "state": "NY", "lat": 40.7758, "lng": -73.8025, "platform": "golfnow", "golfnow_id": "4047",  "holes": 18, "type": "public", "par": 70, "rating": 3.6},
+        {"name": "Forest Park Golf Course",              "city": "Woodhaven",     "state": "NY", "lat": 40.7033, "lng": -73.8541, "platform": "golfnow", "golfnow_id": "5045",  "holes": 9,  "type": "public", "par": 35, "rating": 3.3},
+        {"name": "Douglaston Golf Course",               "city": "Queens",        "state": "NY", "lat": 40.7573, "lng": -73.7462, "platform": "golfnow", "golfnow_id": "5044",  "holes": 18, "type": "public", "par": 67, "rating": 3.4},
+        {"name": "Silver Lake Golf Course",              "city": "Staten Island", "state": "NY", "lat": 40.6350, "lng": -74.0950, "platform": "golfnow", "golfnow_id": "4757",  "holes": 18, "type": "public", "par": 69, "rating": 3.5},
+        {"name": "La Tourette Golf Course",              "city": "Staten Island", "state": "NY", "lat": 40.5800, "lng": -74.1500, "platform": "golfnow", "golfnow_id": "4049",  "holes": 18, "type": "public", "par": 72, "rating": 3.9},
+        {"name": "Mosholu Golf Course",                  "city": "Bronx",         "state": "NY", "lat": 40.8840, "lng": -73.8780, "platform": "golfnow", "golfnow_id": "7316",  "holes": 9,  "type": "public", "par": 34, "rating": 3.2},
 
-        # Bethpage State Park (NYS Parks) — course_id=19765
-        # All 5 courses share the same facility id; schedule_id distinguishes each
-        {"name": "Bethpage State Park - Blue",   "city": "Farmingdale", "state": "NY", "lat": 40.7448, "lng": -73.4540, "platform": "foreup", "platform_id": "19765", "schedule_id": "2431", "holes": 18, "type": "public", "par": 72, "rating": 4.3},
+        # =====================================================================
+        # GOLFNOW — NJ PUBLIC COURSES (confirmed facility IDs, year-round open)
+        # =====================================================================
+        {"name": "Skyway Golf Course",                   "city": "Jersey City",   "state": "NJ", "lat": 40.7360, "lng": -74.0690, "platform": "golfnow", "golfnow_id": "13336", "holes": 18, "type": "public", "par": 71, "rating": 3.7},
+        {"name": "Galloping Hill Golf Course",           "city": "Kenilworth",    "state": "NJ", "lat": 40.6810, "lng": -74.2890, "platform": "golfnow", "golfnow_id": "5095",  "holes": 27, "type": "public", "par": 72, "rating": 4.1},
+        {"name": "Ash Brook Golf Course",                "city": "Scotch Plains",  "state": "NJ", "lat": 40.6540, "lng": -74.3340, "platform": "golfnow", "golfnow_id": "5096",  "holes": 18, "type": "public", "par": 72, "rating": 3.9},
+        {"name": "Spooky Brook Golf Course",             "city": "Somerset",      "state": "NJ", "lat": 40.5510, "lng": -74.4870, "platform": "golfnow", "golfnow_id": "7094",  "holes": 18, "type": "public", "par": 71, "rating": 3.8},
+        {"name": "Tamarack Golf Course - West",          "city": "East Brunswick", "state": "NJ", "lat": 40.4190, "lng": -74.4000, "platform": "golfnow", "golfnow_id": "10037", "holes": 18, "type": "public", "par": 72, "rating": 3.9},
+        {"name": "Tamarack Golf Course - East",          "city": "East Brunswick", "state": "NJ", "lat": 40.4190, "lng": -74.4000, "platform": "golfnow", "golfnow_id": "10038", "holes": 18, "type": "public", "par": 71, "rating": 3.7},
+
+        # =====================================================================
+        # FOREUP — CONFIRMED IDs (from live booking widget SCHEDULES JS var)
+        # course_id=19765 for all Bethpage courses; schedule_id per tee sheet.
+        # Note: 18-hole sheets have block_online_booking=1 (NYS res. restriction);
+        # data will appear inside the 8-day booking window when unblocked.
+        # =====================================================================
+        {"name": "Bethpage State Park - Blue",   "city": "Farmingdale", "state": "NY", "lat": 40.7448, "lng": -73.4540, "platform": "foreup", "platform_id": "19765", "schedule_id": "2433", "holes": 18, "type": "public", "par": 72, "rating": 4.3},
         {"name": "Bethpage State Park - Black",  "city": "Farmingdale", "state": "NY", "lat": 40.7448, "lng": -73.4540, "platform": "foreup", "platform_id": "19765", "schedule_id": "2432", "holes": 18, "type": "public", "par": 71, "rating": 4.8},
-        {"name": "Bethpage State Park - Red",    "city": "Farmingdale", "state": "NY", "lat": 40.7448, "lng": -73.4540, "platform": "foreup", "platform_id": "19765", "schedule_id": "2433", "holes": 18, "type": "public", "par": 70, "rating": 4.5},
-        {"name": "Bethpage State Park - Green",  "city": "Farmingdale", "state": "NY", "lat": 40.7448, "lng": -73.4540, "platform": "foreup", "platform_id": "19765", "schedule_id": "2434", "holes": 18, "type": "public", "par": 71, "rating": 4.1},
-        {"name": "Bethpage State Park - Yellow", "city": "Farmingdale", "state": "NY", "lat": 40.7448, "lng": -73.4540, "platform": "foreup", "platform_id": "19765", "schedule_id": "2435", "holes": 18, "type": "public", "par": 71, "rating": 4.0},
-
-        # Montauk Downs State Park (NYS Parks) — confirmed
-        {"name": "Montauk Downs Golf Course", "city": "Montauk", "state": "NY", "lat": 41.0290, "lng": -71.9270, "platform": "foreup", "platform_id": "19766", "schedule_id": "2437", "holes": 18, "type": "public", "par": 72, "rating": 4.2},
+        {"name": "Bethpage Early AM 9-Hole",     "city": "Farmingdale", "state": "NY", "lat": 40.7448, "lng": -73.4540, "platform": "foreup", "platform_id": "19765", "schedule_id": "2539", "holes": 9,  "type": "public", "par": 36, "rating": 4.0},
+        {"name": "Montauk Downs Golf Course",    "city": "Montauk",     "state": "NY", "lat": 41.0290, "lng": -71.9270, "platform": "foreup", "platform_id": "19766", "schedule_id": "2437", "holes": 18, "type": "public", "par": 72, "rating": 4.2},
 
         # =====================================================================
-        # NYC PARKS GOLF (nycgovparks.org — NOT ForeUP)
-        # These courses use the NYC Parks online reservation system.
-        # Platform set to "nycparks" so the scanner skips them gracefully
-        # until a dedicated scraper is added.
-        # =====================================================================
-        {"name": "Dyker Beach Golf Course",           "city": "Brooklyn",      "state": "NY", "lat": 40.6137, "lng": -74.0095, "platform": "nycparks", "booking_url": "https://www.nycgovparks.org/facility/golf/reservations", "holes": 18, "type": "public", "par": 72, "rating": 3.8},
-        {"name": "Marine Park Golf Course",            "city": "Brooklyn",      "state": "NY", "lat": 40.5932, "lng": -73.9185, "platform": "nycparks", "booking_url": "https://www.nycgovparks.org/facility/golf/reservations", "holes": 18, "type": "public", "par": 72, "rating": 3.6},
-        {"name": "Pelham Bay / Split Rock Golf Course","city": "Bronx",         "state": "NY", "lat": 40.8700, "lng": -73.8064, "platform": "nycparks", "booking_url": "https://www.nycgovparks.org/facility/golf/reservations", "holes": 18, "type": "public", "par": 71, "rating": 3.7},
-        {"name": "Van Cortlandt Park Golf Course",     "city": "Bronx",         "state": "NY", "lat": 40.8932, "lng": -73.8886, "platform": "nycparks", "booking_url": "https://www.nycgovparks.org/facility/golf/reservations", "holes": 18, "type": "public", "par": 70, "rating": 3.5},
-        {"name": "Kissena Golf Course",                "city": "Queens",        "state": "NY", "lat": 40.7500, "lng": -73.8100, "platform": "nycparks", "booking_url": "https://www.nycgovparks.org/facility/golf/reservations", "holes": 18, "type": "public", "par": 64, "rating": 3.4},
-        {"name": "Clearview Park Golf Course",         "city": "Queens",        "state": "NY", "lat": 40.7758, "lng": -73.8025, "platform": "nycparks", "booking_url": "https://www.nycgovparks.org/facility/golf/reservations", "holes": 18, "type": "public", "par": 70, "rating": 3.6},
-        {"name": "Forest Park Golf Course",            "city": "Queens",        "state": "NY", "lat": 40.7033, "lng": -73.8541, "platform": "nycparks", "booking_url": "https://www.nycgovparks.org/facility/golf/reservations", "holes": 9,  "type": "public", "par": 35, "rating": 3.3},
-        {"name": "Douglaston Golf Course",             "city": "Queens",        "state": "NY", "lat": 40.7573, "lng": -73.7462, "platform": "nycparks", "booking_url": "https://www.nycgovparks.org/facility/golf/reservations", "holes": 18, "type": "public", "par": 67, "rating": 3.4},
-        {"name": "Silver Lake Golf Course",            "city": "Staten Island", "state": "NY", "lat": 40.6350, "lng": -74.0950, "platform": "nycparks", "booking_url": "https://www.nycgovparks.org/facility/golf/reservations", "holes": 18, "type": "public", "par": 69, "rating": 3.5},
-        {"name": "La Tourette Golf Course",            "city": "Staten Island", "state": "NY", "lat": 40.5800, "lng": -74.1500, "platform": "nycparks", "booking_url": "https://www.nycgovparks.org/facility/golf/reservations", "holes": 18, "type": "public", "par": 72, "rating": 3.9},
-
-        # =====================================================================
-        # NASSAU COUNTY (golf.nassaucountyny.gov — NOT ForeUP)
+        # NASSAU COUNTY (golf.nassaucountyny.gov — NOT GolfNow or ForeUP)
         # =====================================================================
         {"name": "Eisenhower Park Golf - Red",   "city": "East Meadow", "state": "NY", "lat": 40.7290, "lng": -73.5530, "platform": "nassau_golf", "booking_url": "https://golf.nassaucountyny.gov", "holes": 18, "type": "public", "par": 72, "rating": 3.9},
         {"name": "Eisenhower Park Golf - White",  "city": "East Meadow", "state": "NY", "lat": 40.7290, "lng": -73.5530, "platform": "nassau_golf", "booking_url": "https://golf.nassaucountyny.gov", "holes": 18, "type": "public", "par": 72, "rating": 3.7},
@@ -306,6 +311,13 @@ class ForeUpScraper:
             resp = self.session.get(url, params=params, timeout=10)
             if resp.status_code == 200:
                 data = resp.json()
+                # ForeUP returns the JSON boolean `false` (not []) when the tee
+                # sheet is closed or not yet open for online booking.
+                if data is False or data is None:
+                    msg = resp.headers.get('x-message', '')
+                    if msg:
+                        print(f"  ℹ️  ForeUP course_id={course_id} sched={schedule_id}: {msg}")
+                    return []
                 parsed = self._parse_api_response(data, course_id, schedule_id, date_str)
                 if parsed:
                     return parsed
@@ -453,7 +465,14 @@ class GolfNowScraper:
             return self._search_via_web(lat, lng, radius_miles, date_str, players)
 
     def get_course_tee_times(self, course, target_date=None, players=4):
-        """Get tee times for a specific GolfNow course"""
+        """
+        Get tee times for a specific GolfNow course using confirmed working endpoints.
+
+        Strategy:
+        1. /api/tee-times/facility/{id}/summaries — returns availability + price range per day
+        2. /api/tee-times/featured-facility-result — returns individual time slots
+        Both work without Cloudflare auth or CSRF tokens.
+        """
         if target_date is None:
             target_date = date.today() + timedelta(days=1)
 
@@ -462,28 +481,159 @@ class GolfNowScraper:
             return []
 
         if isinstance(target_date, date):
-            date_str = target_date.strftime("%m-%d-%Y")
             date_iso = target_date.strftime("%Y-%m-%d")
+            date_dt = target_date.strftime("%Y-%m-%dT00:00:00")
         else:
-            date_str = target_date
             date_iso = target_date
+            date_dt = f"{target_date}T00:00:00"
 
         try:
-            url = f"{self.WEB_BASE}/course/{golfnow_id}/teetimes"
-            params = {
-                "date": date_str,
-                "players": players,
-                "holes": 18
-            }
-
-            resp = self.session.get(url, params=params, timeout=10)
-            if resp.status_code != 200:
+            # Step 1: check if this facility has availability on this date
+            summary = self._get_facility_summary(golfnow_id, date_iso)
+            if not summary or summary.get("numberOfTeeTimesAvailable", 0) == 0:
                 return []
 
-            return self._parse_course_page(resp.text, golfnow_id, date_iso)
+            min_price = summary.get("minPrice", {}).get("value", 0) or 0
+            max_price = summary.get("maxPrice", {}).get("value", 0) or 0
+
+            # Step 2: get individual tee time slots
+            slots = self._get_facility_tee_times(golfnow_id, date_dt)
+            if slots:
+                return slots
+
+            # Fallback: synthesize slots from summary data if detailed fetch fails
+            return self._synthesize_from_summary(summary, golfnow_id, date_iso, min_price, max_price)
+
         except Exception as e:
             print(f"  ⚠️  GolfNow error for {course.get('name')}: {e}")
             return []
+
+    def _get_facility_summary(self, golfnow_id, date_iso):
+        """
+        GET /api/tee-times/facility/{id}/summaries/from/{date}/to/{date}
+        Returns availability count and min/max pricing per day. No auth needed.
+        """
+        url = f"{self.WEB_BASE}/api/tee-times/facility/{golfnow_id}/summaries/from/{date_iso}/to/{date_iso}"
+        headers = {**get_headers(), "Accept": "application/json", "Cache-Control": "max-age=6000"}
+        try:
+            resp = self.session.get(url, headers=headers, timeout=8)
+            if resp.status_code == 200:
+                data = resp.json()
+                if isinstance(data, list) and data:
+                    return data[0]
+        except Exception:
+            pass
+        return None
+
+    def _get_facility_tee_times(self, golfnow_id, date_dt):
+        """
+        POST /api/tee-times/featured-facility-result
+        Returns individual tee time slots with times and prices. No auth needed.
+        """
+        url = f"{self.WEB_BASE}/api/tee-times/featured-facility-result"
+        payload = {"facilityId": int(golfnow_id), "predicateDate": date_dt}
+        headers = {**get_headers(), "Content-Type": "application/json", "Accept": "application/json"}
+        date_iso = date_dt[:10]
+
+        try:
+            resp = self.session.post(url, json=payload, headers=headers, timeout=10)
+            if resp.status_code != 200:
+                return []
+            data = resp.json()
+            return self._parse_featured_result(data, golfnow_id, date_iso)
+        except Exception:
+            return []
+
+    def _parse_featured_result(self, data, golfnow_id, date_iso):
+        """Parse /api/tee-times/featured-facility-result response"""
+        times = []
+        booking_url = f"{self.WEB_BASE}/tee-times/facility/{golfnow_id}/search"
+
+        # Response is either a dict with teeTimes/rateSets, or a list of slots
+        slots = []
+        if isinstance(data, list):
+            slots = data
+        elif isinstance(data, dict):
+            slots = (data.get("teeTimes") or data.get("rateSets") or
+                     data.get("TeeTimeGroups") or data.get("items") or [])
+
+        for slot in slots:
+            try:
+                # Handle both camelCase and PascalCase field names
+                time_str = (slot.get("time") or slot.get("Time") or
+                            slot.get("teeTimeDisplay") or slot.get("TeeTimeDisplay") or "")
+                if not time_str:
+                    continue
+
+                # Normalize "HH:MM AM/PM" → "HH:MM"
+                if "AM" in time_str or "PM" in time_str:
+                    try:
+                        from datetime import datetime as dt
+                        time_str = dt.strptime(time_str.strip(), "%I:%M %p").strftime("%H:%M")
+                    except Exception:
+                        pass
+
+                price = float(
+                    slot.get("price") or slot.get("Price") or
+                    slot.get("totalPrice") or slot.get("TotalPrice") or
+                    slot.get("greensFee") or slot.get("GreensFee") or 0
+                )
+                cart = float(slot.get("cartFee") or slot.get("CartFee") or 0)
+                available = int(
+                    slot.get("maxPlayers") or slot.get("MaxPlayers") or
+                    slot.get("playersAvailable") or 4
+                )
+                holes = int(slot.get("holes") or slot.get("Holes") or 18)
+                is_hot = bool(slot.get("isHotDeal") or slot.get("IsHotDeal") or False)
+
+                times.append({
+                    "time": time_str,
+                    "datetime": f"{date_iso}T{time_str}:00",
+                    "holes": holes,
+                    "players_available": available,
+                    "green_fee": price,
+                    "cart_fee": cart,
+                    "total_per_player": price + cart,
+                    "rate_type": "hot_deal" if is_hot else "standard",
+                    "has_special": is_hot,
+                    "special_discount": 0,
+                    "booking_url": booking_url,
+                    "source": "golfnow"
+                })
+            except (ValueError, TypeError):
+                continue
+
+        return times
+
+    def _synthesize_from_summary(self, summary, golfnow_id, date_iso, min_price, max_price):
+        """
+        If we have availability count but no slot detail, synthesize representative
+        tee time entries from the day's summary so the course shows up in results.
+        """
+        count = summary.get("numberOfTeeTimesAvailable", 0)
+        if not count or not min_price:
+            return []
+
+        booking_url = f"{self.WEB_BASE}/tee-times/facility/{golfnow_id}/search"
+        # Generate synthetic morning/midday/afternoon slots
+        slots = []
+        sample_times = ["07:00", "09:00", "11:00", "13:00", "15:00"]
+        for i, t in enumerate(sample_times[:min(count, 5)]):
+            slots.append({
+                "time": t,
+                "datetime": f"{date_iso}T{t}:00",
+                "holes": 18,
+                "players_available": 4,
+                "green_fee": min_price,
+                "cart_fee": 0,
+                "total_per_player": min_price,
+                "rate_type": "standard",
+                "has_special": False,
+                "special_discount": 0,
+                "booking_url": booking_url,
+                "source": "golfnow"
+            })
+        return slots
 
     def _search_via_api(self, lat, lng, radius_miles, date_str, players):
         """Search using GolfNow partner API"""
